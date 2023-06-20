@@ -1,6 +1,14 @@
 # start based on a centos image
 FROM registry.redhat.io/rhel7
 
+ARG REDHAT_USERNAME=${REDHAT_USERNAME}
+ARG REDHAT_PASSWORD=${REDHAT_PASSWORD}
+
+RUN sed -i 's/\(def in_container():\)/\1\n    return False/g' /usr/lib64/python*/*-packages/rhsm/config.py
+RUN subscription-manager register --username $REDHAT_USERNAME --password $REDHAT_PASSWORD --auto-attach
+RUN yum update -y
+RUN subscription-manager unregister
+
 ENV HOME=/opt/app-root/src \
   PATH=/opt/rh/rh-ruby22/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin${PATH:+:${PATH}} \
   LD_LIBRARY_PATH=/opt/rh/rh-ruby22/root/usr/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}} \
