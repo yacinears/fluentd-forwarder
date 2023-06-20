@@ -4,6 +4,8 @@ FROM registry.redhat.io/rhel7
 ARG REDHAT_USERNAME=${REDHAT_USERNAME}
 ARG REDHAT_PASSWORD=${REDHAT_PASSWORD}
 
+RUN echo "$REDHAT_PASSWORD"
+
 RUN sed -i 's/\(def in_container():\)/\1\n    return False/g' /usr/lib64/python*/*-packages/rhsm/config.py
 RUN subscription-manager register --username $REDHAT_USERNAME --password $REDHAT_PASSWORD --auto-attach
 RUN yum update -y
